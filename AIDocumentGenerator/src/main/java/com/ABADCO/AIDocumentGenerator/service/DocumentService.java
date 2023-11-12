@@ -2,7 +2,6 @@ package com.ABADCO.AIDocumentGenerator.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import com.ABADCO.AIDocumentGenerator.model.pojo.Document;
 
