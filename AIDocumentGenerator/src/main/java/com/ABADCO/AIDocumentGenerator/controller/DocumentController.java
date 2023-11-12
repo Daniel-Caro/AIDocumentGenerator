@@ -80,9 +80,9 @@ public class DocumentController {
 	
 	@GetMapping("/documents")
 	public ResponseEntity<List<Document>> getDocuments(@RequestParam Optional<String> title, @RequestParam Optional<Date> date, @RequestParam Optional<String> authors,
-			@RequestParam Optional<String> color, @RequestParam Optional<Integer> user_id) {
+			@RequestParam Optional<String> color, @RequestParam Optional<Long> user_id) {
 		List<Document> documents;
-		documents = service.getDocumentsByCombinedSearch(title.orElse(null), date.orElse(null), authors.orElse(null), null, color.orElse(null), user_id);
+		documents = service.getDocumentsByCombinedSearch(title.orElse(null), date.orElse(null), authors.orElse(null), color.orElse(null), user_id.orElse(null));
 		
 		if (documents != null) {return ResponseEntity.ok(documents); } 
 		else { return ResponseEntity.notFound().build();}
@@ -90,7 +90,7 @@ public class DocumentController {
 	
 	@PostMapping("/documents")
 	public ResponseEntity<Document> createDocument(@RequestParam String title, @RequestParam Date date, @RequestParam String authors, @RequestParam String color, 
-			@RequestParam Boolean hasIndex, @RequestParam Boolean isPaginated, @RequestParam Integer user_id) {
+			@RequestParam Boolean hasIndex, @RequestParam Boolean isPaginated, @RequestParam Long user_id) {
 		Document newDocument = service.createDocument(title, date, authors, color, hasIndex, isPaginated, user_id);
 		if (newDocument != null) {return ResponseEntity.ok(newDocument);}
 		else {return ResponseEntity.notFound().build();}

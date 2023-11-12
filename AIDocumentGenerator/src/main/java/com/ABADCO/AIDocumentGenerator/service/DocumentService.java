@@ -10,11 +10,11 @@ public interface DocumentService {
 
 	Document getDocumentbyId(String documentid);
 
-	List<Document> getDocumentsByCombinedSearch(String orElse, Date orElse2, String orElse3, Object object,
-			String orElse4, Optional<Integer> user_id);
+	List<Document> getDocumentsByCombinedSearch(String title, Date date, String authors, String color,
+			Long user_id );
 
 	Document createDocument(String title, Date date, String authors, String color, Boolean hasIndex,
-			Boolean isPaginated, Integer user_id);
+			Boolean isPaginated, Long user_id);
 
 	Boolean deleteDocument(String documentid);
 
