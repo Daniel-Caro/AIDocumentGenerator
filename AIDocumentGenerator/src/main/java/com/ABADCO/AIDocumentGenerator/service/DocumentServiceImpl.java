@@ -27,6 +27,7 @@ public class DocumentServiceImpl implements DocumentService{
 		return repository.findById(Long.valueOf(documentid)).orElse(null);
 	}
 
+	
 	@Override
 	public List<Document> getDocumentsByCombinedSearch(String title, Date date, String authors, String color,
 			Long user_id) {
@@ -54,6 +55,21 @@ public class DocumentServiceImpl implements DocumentService{
 		User user = userRepository.findById(user_id).orElse(null);
 		if (user == null) return null;
 		document.setUser(user);
+		
+		repository.save(document);
+		return document;
+	}
+	
+	public Document updateDocument(String documentid, String title, Date date, String authors, String color, Boolean hasIndex,
+			Boolean isPaginated) {
+		Document document = repository.findById(Long.valueOf(documentid)).orElse(null);
+		
+		document.setTitle(title);
+		document.setDate(date);
+		document.setAuthors(authors);
+		document.setColor(color);
+		document.setHasIndex(hasIndex);
+		document.setIsPaginated(isPaginated);
 		
 		repository.save(document);
 		return document;

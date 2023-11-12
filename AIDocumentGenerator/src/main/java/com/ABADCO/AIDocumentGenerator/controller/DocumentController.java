@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -96,6 +97,13 @@ public class DocumentController {
 		else {return ResponseEntity.notFound().build();}
 	}
 	
+	@PutMapping("/documents/{documentid}")
+	public ResponseEntity<Document> updateDocument(@PathVariable String documentid, @RequestParam String title, @RequestParam Date date, @RequestParam String authors, 
+			@RequestParam String color, @RequestParam Boolean hasIndex, @RequestParam Boolean isPaginated) {
+		Document updatedDocument = service.updateDocument(documentid, title, date, authors, color, hasIndex, isPaginated);
+		if (updatedDocument != null) {return ResponseEntity.ok(updatedDocument);}
+		else {return ResponseEntity.notFound().build();}
+	}
 	@DeleteMapping("/documents/{documentid}")
 	public ResponseEntity<Boolean> deleteDocument(@PathVariable String documentid) {
 		Boolean result = service.deleteDocument(documentid);

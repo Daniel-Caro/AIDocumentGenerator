@@ -17,5 +17,8 @@ public interface DocumentService {
 			Boolean isPaginated, Long user_id);
 
 	Boolean deleteDocument(String documentid);
+	
+	 Document updateDocument(String documentid, String title, Date date, String authors, String color, Boolean hasIndex,
+				Boolean isPaginated);
 
 }
