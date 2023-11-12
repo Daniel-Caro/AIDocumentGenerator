@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ABADCO.AIDocumentGenerator.data.DocumentRepository;
+import com.ABADCO.AIDocumentGenerator.data.UserRepository;
 import com.ABADCO.AIDocumentGenerator.model.pojo.Document;
 import com.ABADCO.AIDocumentGenerator.model.pojo.User;
 
@@ -49,18 +51,24 @@ public class DocumentServiceImpl implements DocumentService{
 		document.setUrlView(urlView);
 		document.setUrlEdit(urlEdit);
 		
-		User user = userRepository.findById(user_id);
+		User user = userRepository.findById(user_id).orElse(null);
+		if (user == null) return null;
 		document.setUser(user);
 		
-		repository.saveDocument(document);
+		repository.save(document);
 		return document;
 	}
 
 	@Override
 	public Boolean deleteDocument(String documentId) {
 		// TODO Auto-generated method stub
-		repository.delete(documentId);
-		return true;
+		Document document = repository.findById(Long.valueOf(documentId)).orElse(null);
+		if(document != null) {
+			repository.delete(document);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }
