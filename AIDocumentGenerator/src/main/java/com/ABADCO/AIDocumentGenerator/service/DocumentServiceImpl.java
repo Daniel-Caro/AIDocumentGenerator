@@ -1,6 +1,6 @@
 package com.ABADCO.AIDocumentGenerator.service;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,14 +29,14 @@ public class DocumentServiceImpl implements DocumentService{
 
 	
 	@Override
-	public List<Document> getDocumentsByCombinedSearch(String title, Date date, String authors, String color,
+	public List<Document> getDocumentsByCombinedSearch(String title, LocalDate date, String authors, String color,
 			Long user_id) {
 		// TODO Auto-generated method stub
 		return repository.findByTitleAndDateAndAuthorsAndColorAndUserId(title, date, authors, color, user_id);
 	}
 
 	@Override
-	public Document createDocument(String title, Date date, String authors, String color, Boolean hasIndex,
+	public Document createDocument(String title, LocalDate date, String authors, String color, Boolean hasIndex,
 			Boolean isPaginated, Long user_id) {
 		// TODO Auto-generated method stub
 		String urlView = UUID.randomUUID().toString();
@@ -60,7 +60,7 @@ public class DocumentServiceImpl implements DocumentService{
 		return document;
 	}
 	
-	public Document updateDocument(String documentid, String title, Date date, String authors, String color, Boolean hasIndex,
+	public Document updateDocument(String documentid, String title, LocalDate date, String authors, String color, Boolean hasIndex,
 			Boolean isPaginated) {
 		Document document = repository.findById(Long.valueOf(documentid)).orElse(null);
 		

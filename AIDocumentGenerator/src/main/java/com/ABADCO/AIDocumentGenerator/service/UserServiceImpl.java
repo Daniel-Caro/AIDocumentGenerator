@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ABADCO.AIDocumentGenerator.data.UserRepository;
-import com.ABADCO.AIDocumentGenerator.model.pojo.Document;
 import com.ABADCO.AIDocumentGenerator.model.pojo.User;
 
 @Service

@@ -1,6 +1,5 @@
 package com.ABADCO.AIDocumentGenerator.controller;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,27 +32,25 @@ public class SectionController {
 	}
 	
 	@GetMapping("/sections")
-	public ResponseEntity<List<Section>> getSections(@RequestParam Optional<String> title, @RequestParam Optional<String> content, @RequestParam Optional<Integer> order,
-			@RequestParam Optional<Boolean> isVisible, @RequestParam Optional<Long> document_id) {
+	public ResponseEntity<List<Section>> getSections(@RequestParam Optional<String> title, @RequestParam Optional<String> content, @RequestParam Optional<Integer> position, @RequestParam Optional<Boolean> isVisible, @RequestParam Optional<Long> document_id) {
 		List<Section> sections;
-		sections = service.getSectionsByCombinedSearch(title.orElse(null), content.orElse(null), order.orElse(null), isVisible.orElse(null), document_id.orElse(null));
+		sections = service.getSectionsByCombinedSearch(title.orElse(null), content.orElse(null), position.orElse(null), isVisible.orElse(null), document_id.orElse(null));
 		
 		if (sections != null) {return ResponseEntity.ok(sections); } 
 		else { return ResponseEntity.notFound().build();}
 	}
 	
 	@PostMapping("/sections")
-	public ResponseEntity<Section> createSection(@RequestParam String title, @RequestParam String content, @RequestParam Integer order,
+	public ResponseEntity<Section> createSection(@RequestParam String title, @RequestParam String content, @RequestParam Integer position,
 			@RequestParam Boolean isVisible, @RequestParam Long document_id) {
-		Section newSection = service.createSection(title, content, order, isVisible, document_id);
+		Section newSection = service.createSection(title, content, position, isVisible, document_id);
 		if (newSection != null) {return ResponseEntity.ok(newSection);}
 		else {return ResponseEntity.notFound().build();}
 	}
 	
 	@PutMapping("/sections/{sectionid}")
-	public ResponseEntity<Section> updateSection(@PathVariable String sectionid, @RequestParam String title, @RequestParam String content, @RequestParam Integer order,
-			@RequestParam Boolean isVisible) {
-		Section updatedSection = service.updateSection(sectionid, title, content, order, isVisible);
+	public ResponseEntity<Section> updateSection(@PathVariable String sectionid, @RequestParam String title, @RequestParam String content, @RequestParam Integer position, @RequestParam Boolean isVisible) {
+		Section updatedSection = service.updateSection(sectionid, title, content, position, isVisible);
 		if (updatedSection != null) {return ResponseEntity.ok(updatedSection);}
 		else {return ResponseEntity.notFound().build();}
 	}

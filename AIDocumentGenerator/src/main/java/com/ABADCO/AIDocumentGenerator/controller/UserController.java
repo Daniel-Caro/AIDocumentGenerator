@@ -41,7 +41,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/users")
-	public ResponseEntity<User> createDocument(@RequestParam String username, @RequestParam String email, @RequestParam String password) {
+	public ResponseEntity<User> createUser(@RequestParam String username, @RequestParam String email, @RequestParam String password) {
 		User newUser = service.createUser(username, email, password);
 		if (newUser != null) {return ResponseEntity.ok(newUser);}
 		else {return ResponseEntity.notFound().build();}

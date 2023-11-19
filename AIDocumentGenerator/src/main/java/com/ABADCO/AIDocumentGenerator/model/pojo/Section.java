@@ -5,9 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,17 +32,17 @@ public class Section {
 	private String title;
 	
 	@Column(name = "content")
-	private String content;
-	
-	@Column(name = "order")
-	private Integer order;
+	private String content;	
 	
 	@Column(name = "is_visible")
 	private Boolean isVisible;
 	
+	@Column(name = "position")
+	private Integer position;
+	
 	@ManyToOne
-    @MapsId("documentId")
-    @JoinColumn(name = "document_id")
+    //@MapsId("documentId")
+    //@JoinColumn(name = "document_id")
     private Document document;
 
 }

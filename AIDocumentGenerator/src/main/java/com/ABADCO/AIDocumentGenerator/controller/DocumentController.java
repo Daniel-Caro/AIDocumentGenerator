@@ -1,12 +1,20 @@
 package com.ABADCO.AIDocumentGenerator.controller;
 
-import java.util.Date;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +35,8 @@ public class DocumentController {
 	
 	private DocumentService service;
 	
+	Logger logger = LoggerFactory.getLogger(DocumentController.class);
+	
 	@Qualifier("openaiRestTemplate")
     @Autowired
     private RestTemplate restTemplate;
@@ -36,14 +46,21 @@ public class DocumentController {
     
     @Value("${openai.api.url}")
     private String apiUrl;
+    
+    @Value("${deepai.api.url}")
+    private String deepAiApiUrl;
+    
+    @Value("${deepai.api.key}")
+    private String deepAiKey;
 	
 	@Autowired
 	public DocumentController(DocumentService service) {this.service = service;}
 	
 	@GetMapping("/documents/bytext")
 	public String getRequirements(@RequestParam String text) {
+		String finalText = "I want you to obtain a series of requisites from this text. Place all the requisites in a list: " + text;
 		// create a request
-        GPTChatRequest request = new GPTChatRequest(model, text);
+        GPTChatRequest request = new GPTChatRequest(model, finalText);
         
         // call the API
         GPTChatResponse response = restTemplate.postForObject(apiUrl, request, GPTChatResponse.class);
@@ -55,21 +72,43 @@ public class DocumentController {
         return response.getChoices().get(0).getMessage().getContent();
 	}
 	
-	/*@GetMapping("/document/byrequirements")
+	/*@GetMapping("/documents/byrequirements")
 	public String getText(@RequestParam String requirements) {
-		String url = "https://api.deepai.org/api/text-generator"
-		// create a request
-        GPTChatRequest request = new GPTChatRequest(model, text);
-        
-        // call the API
-        GPTChatResponse response = restTemplate.postForObject(apiUrl, request, GPTChatResponse.class);
-        
-        if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
-            return "No response";
-        }
-        
-        // return the first response
-        return response.getChoices().get(0).getMessage().getContent();
+		requirements = "Dado una serie de requisitos para una aplicación genera un texto descriptivo del funcionamiento de dicha aplicación, el idioma del texto será el mismo que el de los requisitos:" + requirements;
+		String command = String.format("curl -F 'text=%s' -H 'api-key:%s' %s", requirements, deepAiKey, deepAiApiUrl);
+		ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
+		Process process;
+		try {
+			process = processBuilder.start();
+			InputStream ins = process.getInputStream();
+			BufferedReader read = new BufferedReader(new InputStreamReader(ins));
+			StringBuilder sb = new StringBuilder();
+			Stream<String> lines = read.lines();
+			lines.
+			for(String line :lines) {
+				
+			}
+			lines.forEach(line -> {
+			     logger.debug("line>"+line);
+			     sb.append(line);
+			});// close the buffered reader
+			read.close();/*
+			 * wait until process completes, this should be always after the    
+			 * input_stream of processbuilder is read to avoid deadlock 
+			 * situations
+			 */ 
+			/*process.waitFor();/* exit code can be obtained only after process completes, 0 
+			 * indicates a successful completion
+			 */
+			/*int exitCode = process.exitValue();
+			logger.debug("exit code::"+exitCode);// finally destroy the process
+			process.destroy();
+			return "aaa";
+		} catch (InterruptedException | UnsupportedOperationException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "Error occured";
+		}
 	}*/
 	
 	@GetMapping("/documents/{documentid}")
@@ -80,8 +119,7 @@ public class DocumentController {
 	}
 	
 	@GetMapping("/documents")
-	public ResponseEntity<List<Document>> getDocuments(@RequestParam Optional<String> title, @RequestParam Optional<Date> date, @RequestParam Optional<String> authors,
-			@RequestParam Optional<String> color, @RequestParam Optional<Long> user_id) {
+	public ResponseEntity<List<Document>> getDocuments(@RequestParam Optional<String> title, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)Optional<LocalDate> date, @RequestParam Optional<String> authors, @RequestParam Optional<String> color, @RequestParam Optional<Long> user_id) {
 		List<Document> documents;
 		documents = service.getDocumentsByCombinedSearch(title.orElse(null), date.orElse(null), authors.orElse(null), color.orElse(null), user_id.orElse(null));
 		
@@ -90,16 +128,14 @@ public class DocumentController {
 	}
 	
 	@PostMapping("/documents")
-	public ResponseEntity<Document> createDocument(@RequestParam String title, @RequestParam Date date, @RequestParam String authors, @RequestParam String color, 
-			@RequestParam Boolean hasIndex, @RequestParam Boolean isPaginated, @RequestParam Long user_id) {
+	public ResponseEntity<Document> createDocument(@RequestParam String title, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate date, @RequestParam String authors, @RequestParam String color, @RequestParam Boolean hasIndex, @RequestParam Boolean isPaginated, @RequestParam Long user_id) {
 		Document newDocument = service.createDocument(title, date, authors, color, hasIndex, isPaginated, user_id);
 		if (newDocument != null) {return ResponseEntity.ok(newDocument);}
 		else {return ResponseEntity.notFound().build();}
 	}
 	
 	@PutMapping("/documents/{documentid}")
-	public ResponseEntity<Document> updateDocument(@PathVariable String documentid, @RequestParam String title, @RequestParam Date date, @RequestParam String authors, 
-			@RequestParam String color, @RequestParam Boolean hasIndex, @RequestParam Boolean isPaginated) {
+	public ResponseEntity<Document> updateDocument(@PathVariable String documentid, @RequestParam String title, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate date, @RequestParam String authors, @RequestParam String color, @RequestParam Boolean hasIndex, @RequestParam Boolean isPaginated) {
 		Document updatedDocument = service.updateDocument(documentid, title, date, authors, color, hasIndex, isPaginated);
 		if (updatedDocument != null) {return ResponseEntity.ok(updatedDocument);}
 		else {return ResponseEntity.notFound().build();}

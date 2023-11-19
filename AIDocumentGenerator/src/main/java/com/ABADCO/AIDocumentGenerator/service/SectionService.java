@@ -8,12 +8,12 @@ public interface SectionService {
 
 	Section getSectionbyId(String sectionid);
 
-	List<Section> getSectionsByCombinedSearch(String title, String content, Integer order, Boolean isVisible,
+	List<Section> getSectionsByCombinedSearch(String title, String content, Integer position, Boolean isVisible,
 			Long document_id);
 
-	Section createSection(String title, String content, Integer order, Boolean isVisible, Long document_id);
+	Section createSection(String title, String content, Integer position, Boolean isVisible, Long document_id);
 
-	Section updateSection(String sectionid, String title, String content, Integer order, Boolean isVisible);
+	Section updateSection(String sectionid, String title, String content, Integer position, Boolean isVisible);
 
 	Boolean deleteSection(String sectionid);
 

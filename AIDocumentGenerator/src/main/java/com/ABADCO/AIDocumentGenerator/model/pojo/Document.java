@@ -1,15 +1,13 @@
 package com.ABADCO.AIDocumentGenerator.model.pojo;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +34,7 @@ public class Document {
 	private String title;
 	
 	@Column(name = "date")
-	private Date date;
+	private LocalDate date;
 	
 	@Column(name = "authors")
 	private String authors;
@@ -57,8 +55,8 @@ public class Document {
 	private String urlEdit;
 	
 	@ManyToOne
-    @MapsId("userId")
-    @JoinColumn(name = "user_id")
+    //@MapsId("userId")
+    //@JoinColumn(name = "user_id")
     private User user;
 
 }

@@ -9,7 +9,6 @@ import com.ABADCO.AIDocumentGenerator.data.DocumentRepository;
 import com.ABADCO.AIDocumentGenerator.data.SectionRepository;
 import com.ABADCO.AIDocumentGenerator.model.pojo.Document;
 import com.ABADCO.AIDocumentGenerator.model.pojo.Section;
-import com.ABADCO.AIDocumentGenerator.model.pojo.User;
 
 @Service
 public class SectionServiceImpl implements SectionService{
@@ -27,19 +26,19 @@ public class SectionServiceImpl implements SectionService{
 	}
 
 	@Override
-	public List<Section> getSectionsByCombinedSearch(String title, String content, Integer order, Boolean isVisible,
+	public List<Section> getSectionsByCombinedSearch(String title, String content, Integer position, Boolean isVisible,
 			Long document_id) {
 		// TODO Auto-generated method stub
-		return repository.findByTitleAndContentAndOrderAndIsVisibleAndDocumentId(title, content, order, isVisible, document_id);
+		return repository.findByTitleAndContentAndPositionAndIsVisibleAndDocumentId(title, content, position, isVisible, document_id);
 	}
 
 	@Override
-	public Section createSection(String title, String content, Integer order, Boolean isVisible, Long document_id) {
+	public Section createSection(String title, String content, Integer position, Boolean isVisible, Long document_id) {
 		// TODO Auto-generated method stub
 		Section section = new Section();
 		section.setTitle(title);
 		section.setContent(content);;
-		section.setOrder(order);;
+		section.setPosition(position);;
 		section.setIsVisible(isVisible);;
 		
 		Document doc = documentRepository.findById(document_id).orElse(null);
@@ -51,13 +50,13 @@ public class SectionServiceImpl implements SectionService{
 	}
 
 	@Override
-	public Section updateSection(String sectionid, String title, String content, Integer order, Boolean isVisible) {
+	public Section updateSection(String sectionid, String title, String content, Integer position, Boolean isVisible) {
 		// TODO Auto-generated method stub
 		Section section = repository.findById(Long.valueOf(sectionid)).orElse(null);
 		
 		section.setTitle(title);
 		section.setContent(content);
-		section.setOrder(order);
+		section.setPosition(position);
 		section.setIsVisible(isVisible);
 		
 		repository.save(section);
