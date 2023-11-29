@@ -10,7 +10,7 @@ public interface DocumentService {
 	Document getDocumentbyId(String documentid);
 
 	List<Document> getDocumentsByCombinedSearch(String title, LocalDate date, String authors, String color,
-			Long user_id );
+			Long user_id, String urlView, String urlEdit);
 
 	Document createDocument(String title, LocalDate date, String authors, String color, Boolean hasIndex,
 			Boolean isPaginated, Long user_id);

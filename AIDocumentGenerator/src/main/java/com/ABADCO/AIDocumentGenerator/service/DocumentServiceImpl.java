@@ -30,9 +30,9 @@ public class DocumentServiceImpl implements DocumentService{
 	
 	@Override
 	public List<Document> getDocumentsByCombinedSearch(String title, LocalDate date, String authors, String color,
-			Long user_id) {
+			Long user_id, String urlView, String urlEdit) {
 		// TODO Auto-generated method stub
-		return repository.findByTitleAndDateAndAuthorsAndColorAndUserId(title, date, authors, color, user_id);
+		return repository.findByTitleAndDateAndAuthorsAndColorAndUserIdAndUrlViewAndUrlEdit(title, date, authors, color, user_id, urlView, urlEdit);
 	}
 
 	@Override

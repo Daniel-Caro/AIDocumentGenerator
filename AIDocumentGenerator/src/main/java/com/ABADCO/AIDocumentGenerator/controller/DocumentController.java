@@ -1,13 +1,8 @@
 package com.ABADCO.AIDocumentGenerator.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,9 +114,9 @@ public class DocumentController {
 	}
 	
 	@GetMapping("/documents")
-	public ResponseEntity<List<Document>> getDocuments(@RequestParam Optional<String> title, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)Optional<LocalDate> date, @RequestParam Optional<String> authors, @RequestParam Optional<String> color, @RequestParam Optional<Long> user_id) {
+	public ResponseEntity<List<Document>> getDocuments(@RequestParam Optional<String> title, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)Optional<LocalDate> date, @RequestParam Optional<String> authors, @RequestParam Optional<String> color, @RequestParam Optional<Long> user_id, @RequestParam Optional<String> urlView, @RequestParam Optional<String> urlEdit) {
 		List<Document> documents;
-		documents = service.getDocumentsByCombinedSearch(title.orElse(null), date.orElse(null), authors.orElse(null), color.orElse(null), user_id.orElse(null));
+		documents = service.getDocumentsByCombinedSearch(title.orElse(null), date.orElse(null), authors.orElse(null), color.orElse(null), user_id.orElse(null), urlView.orElse(null), urlEdit.orElse(null));
 		
 		if (documents != null) {return ResponseEntity.ok(documents); } 
 		else { return ResponseEntity.notFound().build();}
