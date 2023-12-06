@@ -3,6 +3,7 @@ package com.ABADCO.AIDocumentGenerator.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ABADCO.AIDocumentGenerator.data.UserRepository;
@@ -10,6 +11,8 @@ import com.ABADCO.AIDocumentGenerator.model.pojo.User;
 
 @Service
 public class UserServiceImpl implements UserService{
+	
+	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 	
 	@Autowired
 	private UserRepository repository;
@@ -31,7 +34,7 @@ public class UserServiceImpl implements UserService{
 		// TODO Auto-generated method stub
 		User user = new User();
 		user.setUsername(username);
-		user.setPassword(password);
+		user.setPassword(encoder.encode(password));
 		user.setEmail(email);;
 		
 		repository.save(user);
@@ -44,7 +47,7 @@ public class UserServiceImpl implements UserService{
 		User user = repository.findById(Long.valueOf(userid)).orElse(null);
 		
 		user.setUsername(username);
-		user.setPassword(password);
+		user.setPassword(encoder.encode(password));
 		user.setEmail(email);;
 		
 		repository.save(user);
@@ -62,5 +65,15 @@ public class UserServiceImpl implements UserService{
 			return false;
 		}
 	}
+
+	@Override
+	public Boolean checkLogin(String username, String password) {
+		// TODO Auto-generated method stub
+		User user = repository.findByUsername(username);
+		Boolean result = encoder.matches(password, user.getPassword());
+		return result;
+	}
+	
+	
 
 }

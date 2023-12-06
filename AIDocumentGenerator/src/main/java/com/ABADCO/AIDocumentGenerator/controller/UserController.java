@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ABADCO.AIDocumentGenerator.model.pojo.User;
+import com.ABADCO.AIDocumentGenerator.model.request.CheckLogin;
 import com.ABADCO.AIDocumentGenerator.model.request.CreateUserRequest;
 import com.ABADCO.AIDocumentGenerator.service.UserService;
 
@@ -22,7 +23,7 @@ import com.ABADCO.AIDocumentGenerator.service.UserService;
 public class UserController {
 	
 	private UserService service;
-	
+		
 	@Autowired
 	public UserController(UserService service) {this.service = service;}
 	
@@ -61,6 +62,12 @@ public class UserController {
 		Boolean result = service.deleteUser(userid);
 		if (result) {return ResponseEntity.ok(result);}
 		else {return ResponseEntity.notFound().build();}
+	}
+	
+	@GetMapping("/users/login")
+	public ResponseEntity<Boolean> checkLogin(@RequestBody CheckLogin request) {
+		Boolean result = service.checkLogin(request.getUsername(), request.getPassword());
+		return ResponseEntity.ok(result);
 	}
 
 }
