@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ABADCO.AIDocumentGenerator.model.pojo.Section;
+import com.ABADCO.AIDocumentGenerator.model.request.CreateSectionRequest;
+import com.ABADCO.AIDocumentGenerator.model.request.UpdateSectionRequest;
 import com.ABADCO.AIDocumentGenerator.service.SectionService;
 
 @RestController
@@ -41,16 +44,15 @@ public class SectionController {
 	}
 	
 	@PostMapping("/sections")
-	public ResponseEntity<Section> createSection(@RequestParam String title, @RequestParam String content, @RequestParam Integer position,
-			@RequestParam Boolean isVisible, @RequestParam Long document_id) {
-		Section newSection = service.createSection(title, content, position, isVisible, document_id);
+	public ResponseEntity<Section> createSection(@RequestBody CreateSectionRequest request) {
+		Section newSection = service.createSection(request.getTitle(), request.getContent(), request.getPosition(), request.getIsVisible(), request.getDocument_id());
 		if (newSection != null) {return ResponseEntity.ok(newSection);}
 		else {return ResponseEntity.notFound().build();}
 	}
 	
 	@PutMapping("/sections/{sectionid}")
-	public ResponseEntity<Section> updateSection(@PathVariable String sectionid, @RequestParam String title, @RequestParam String content, @RequestParam Integer position, @RequestParam Boolean isVisible) {
-		Section updatedSection = service.updateSection(sectionid, title, content, position, isVisible);
+	public ResponseEntity<Section> updateSection(@PathVariable String sectionid, @RequestBody UpdateSectionRequest request) {
+		Section updatedSection = service.updateSection(sectionid, request.getTitle(), request.getContent(), request.getPosition(), request.getIsVisible());
 		if (updatedSection != null) {return ResponseEntity.ok(updatedSection);}
 		else {return ResponseEntity.notFound().build();}
 	}

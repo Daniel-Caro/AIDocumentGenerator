@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -23,6 +24,9 @@ import org.springframework.web.client.RestTemplate;
 import com.ABADCO.AIDocumentGenerator.model.pojo.Document;
 import com.ABADCO.AIDocumentGenerator.model.request.GPTChatRequest;
 import com.ABADCO.AIDocumentGenerator.model.request.GPTChatResponse;
+import com.ABADCO.AIDocumentGenerator.model.request.CreateDocumentRequest;
+import com.ABADCO.AIDocumentGenerator.model.request.GetRequirementsRequest;
+import com.ABADCO.AIDocumentGenerator.model.request.UpdateDocumentRequest;
 import com.ABADCO.AIDocumentGenerator.service.DocumentService;
 
 @RestController
@@ -52,13 +56,13 @@ public class DocumentController {
 	public DocumentController(DocumentService service) {this.service = service;}
 	
 	@GetMapping("/documents/bytext")
-	public String getRequirements(@RequestParam String text) {
-		String finalText = "I want you to obtain a series of requisites from this text. Place all the requisites in a list: " + text;
+	public String getRequirements(@RequestBody GetRequirementsRequest request) {
+		String finalText = "I want you to obtain a series of requisites from this text. Place all the requisites in a list: " + request.getText();
 		// create a request
-        GPTChatRequest request = new GPTChatRequest(model, finalText);
+        GPTChatRequest requestAI = new GPTChatRequest(model, finalText);
         
         // call the API
-        GPTChatResponse response = restTemplate.postForObject(apiUrl, request, GPTChatResponse.class);
+        GPTChatResponse response = restTemplate.postForObject(apiUrl, requestAI, GPTChatResponse.class);
         if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
             return "No response";
         }
@@ -123,15 +127,15 @@ public class DocumentController {
 	}
 	
 	@PostMapping("/documents")
-	public ResponseEntity<Document> createDocument(@RequestParam String title, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate date, @RequestParam String authors, @RequestParam String color, @RequestParam Boolean hasIndex, @RequestParam Boolean isPaginated, @RequestParam Long user_id) {
-		Document newDocument = service.createDocument(title, date, authors, color, hasIndex, isPaginated, user_id);
+	public ResponseEntity<Document> createDocument(@RequestBody CreateDocumentRequest request) {
+		Document newDocument = service.createDocument(request.getTitle(), request.getDate(), request.getAuthors(), request.getColor(), request.getHasIndex(), request.getIsPaginated(), request.getUser_id());
 		if (newDocument != null) {return ResponseEntity.ok(newDocument);}
 		else {return ResponseEntity.notFound().build();}
 	}
 	
 	@PutMapping("/documents/{documentid}")
-	public ResponseEntity<Document> updateDocument(@PathVariable String documentid, @RequestParam String title, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate date, @RequestParam String authors, @RequestParam String color, @RequestParam Boolean hasIndex, @RequestParam Boolean isPaginated) {
-		Document updatedDocument = service.updateDocument(documentid, title, date, authors, color, hasIndex, isPaginated);
+	public ResponseEntity<Document> updateDocument(@PathVariable String documentid, @RequestBody UpdateDocumentRequest request) {
+		Document updatedDocument = service.updateDocument(documentid, request.getTitle(), request.getDate(), request.getAuthors(), request.getColor(), request.getHasIndex(), request.getIsPaginated());
 		if (updatedDocument != null) {return ResponseEntity.ok(updatedDocument);}
 		else {return ResponseEntity.notFound().build();}
 	}
