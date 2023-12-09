@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class GetRequirementsRequest {
 	
-	@JsonProperty("title") 
+	@JsonProperty("text") 
 	private String text; 
 
 }
