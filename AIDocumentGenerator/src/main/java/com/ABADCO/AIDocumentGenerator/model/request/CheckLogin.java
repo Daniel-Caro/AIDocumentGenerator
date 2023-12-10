@@ -13,8 +13,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CheckLogin {
 	
-	@JsonProperty("username") 
-	private String username;
+	@JsonProperty("email") 
+	private String email;
 	
 	@JsonProperty("password") 
 	private String password;

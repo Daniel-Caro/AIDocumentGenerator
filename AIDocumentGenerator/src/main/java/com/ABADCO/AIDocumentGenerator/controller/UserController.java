@@ -64,9 +64,9 @@ public class UserController {
 		else {return ResponseEntity.notFound().build();}
 	}
 	
-	@GetMapping("/users/login")
+	@PostMapping("/users/login")
 	public ResponseEntity<Boolean> checkLogin(@RequestBody CheckLogin request) {
-		Boolean result = service.checkLogin(request.getUsername(), request.getPassword());
+		Boolean result = service.checkLogin(request.getEmail(), request.getPassword());
 		return ResponseEntity.ok(result);
 	}
 

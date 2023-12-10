@@ -67,9 +67,9 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public Boolean checkLogin(String username, String password) {
+	public Boolean checkLogin(String email, String password) {
 		// TODO Auto-generated method stub
-		User user = repository.findByUsername(username);
+		User user = repository.findByEmail(email);
 		Boolean result = encoder.matches(password, user.getPassword());
 		return result;
 	}
