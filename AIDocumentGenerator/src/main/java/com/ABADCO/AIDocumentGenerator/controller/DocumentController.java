@@ -30,6 +30,7 @@ import com.ABADCO.AIDocumentGenerator.model.request.CreateDocumentRequest;
 import com.ABADCO.AIDocumentGenerator.model.request.GPTChatRequest;
 import com.ABADCO.AIDocumentGenerator.model.request.GPTChatResponse;
 import com.ABADCO.AIDocumentGenerator.model.request.GetRequirementsRequest;
+import com.ABADCO.AIDocumentGenerator.model.request.GetTextRequest;
 import com.ABADCO.AIDocumentGenerator.model.request.UpdateDocumentRequest;
 import com.ABADCO.AIDocumentGenerator.service.DocumentService;
 import com.ABADCO.AIDocumentGenerator.service.UserService;
@@ -71,6 +72,25 @@ public class DocumentController {
 	public Object getRequirements(@RequestHeader("Admin-Key") String adminKey, @RequestBody GetRequirementsRequest request) {
 		if (adminKey.equals(adminUUID)) {
 			String finalText = "I want you to obtain a series of requisites from this text. Place all the requisites in a list: " + request.getText();
+			// create a request
+	        GPTChatRequest requestAI = new GPTChatRequest(model, finalText);
+	        
+	        // call the API
+	        GPTChatResponse response = restTemplate.postForObject(apiUrl, requestAI, GPTChatResponse.class);
+	        if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
+	            return "No response";
+	        }
+	        
+	        // return the first response
+	        return response.getChoices().get(0).getMessage().getContent();
+		} else {return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);}
+	}
+	
+	//ADMIN
+	@GetMapping("/documents/byrequirements")
+	public Object getText(@RequestHeader("Admin-Key") String adminKey, @RequestBody GetTextRequest request) {
+		if (adminKey.equals(adminUUID)) {
+			String finalText = "I want you make a text from the requisites presented here: " + request.getRequirements();
 			// create a request
 	        GPTChatRequest requestAI = new GPTChatRequest(model, finalText);
 	        
