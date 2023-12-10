@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.ABADCO.AIDocumentGenerator.model.pojo.Document;
+import com.ABADCO.AIDocumentGenerator.model.request.CreateDocumentRequest;
 import com.ABADCO.AIDocumentGenerator.model.request.GPTChatRequest;
 import com.ABADCO.AIDocumentGenerator.model.request.GPTChatResponse;
-import com.ABADCO.AIDocumentGenerator.model.request.CreateDocumentRequest;
 import com.ABADCO.AIDocumentGenerator.model.request.GetRequirementsRequest;
 import com.ABADCO.AIDocumentGenerator.model.request.UpdateDocumentRequest;
 import com.ABADCO.AIDocumentGenerator.service.DocumentService;
