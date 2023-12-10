@@ -61,8 +61,10 @@ public class DocumentServiceImpl implements DocumentService{
 	}
 	
 	public Document updateDocument(String documentid, String title, LocalDate date, String authors, String color, Boolean hasIndex,
-			Boolean isPaginated) {
+			Boolean isPaginated, String userCookie) {
 		Document document = repository.findById(Long.valueOf(documentid)).orElse(null);
+		
+		if (!document.getUser().getCookie().equals(userCookie)) return null;
 		
 		document.setTitle(title);
 		document.setDate(date);
@@ -76,10 +78,10 @@ public class DocumentServiceImpl implements DocumentService{
 	}
 
 	@Override
-	public Boolean deleteDocument(String documentId) {
+	public Boolean deleteDocument(String documentId, String userCookie) {
 		// TODO Auto-generated method stub
 		Document document = repository.findById(Long.valueOf(documentId)).orElse(null);
-		if(document != null) {
+		if(document != null && document.getUser().getCookie().equals(userCookie)) {
 			repository.delete(document);
 			return true;
 		} else {

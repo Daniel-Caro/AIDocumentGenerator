@@ -16,6 +16,8 @@ public interface UserService {
 
 	Boolean deleteUser(String userid);
 
-	Boolean checkLogin(String email, String password);
+	String checkLogin(String email, String password);
+
+	User getUserByUUID(String userCookie);
 
 }

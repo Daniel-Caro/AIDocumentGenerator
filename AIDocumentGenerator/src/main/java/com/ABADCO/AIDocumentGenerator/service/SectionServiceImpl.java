@@ -27,13 +27,17 @@ public class SectionServiceImpl implements SectionService{
 
 	@Override
 	public List<Section> getSectionsByCombinedSearch(String title, String content, Integer position, Boolean isVisible,
-			Long document_id) {
+			Long document_id, String userCookie) {
 		// TODO Auto-generated method stub
+		//INVALID SEARCH FOR THAT USER
+		if (!checkDocOwner(userCookie, document_id)) return null;
 		return repository.findByTitleAndContentAndPositionAndIsVisibleAndDocumentId(title, content, position, isVisible, document_id);
 	}
 
 	@Override
-	public Section createSection(String title, String content, Integer position, Boolean isVisible, Long document_id) {
+	public Section createSection(String title, String content, Integer position, Boolean isVisible, Long document_id, String userCookie) {
+		if (!checkDocOwner(userCookie, document_id)) return null;
+		
 		// TODO Auto-generated method stub
 		Section section = new Section();
 		section.setTitle(title);
@@ -50,9 +54,11 @@ public class SectionServiceImpl implements SectionService{
 	}
 
 	@Override
-	public Section updateSection(String sectionid, String title, String content, Integer position, Boolean isVisible) {
+	public Section updateSection(String sectionid, String userCookie, String title, String content, Integer position, Boolean isVisible) {
 		// TODO Auto-generated method stub
 		Section section = repository.findById(Long.valueOf(sectionid)).orElse(null);
+		
+		if (!checkDocOwner(userCookie, section.getDocument().getId())) return null;
 		
 		section.setTitle(title);
 		section.setContent(content);
@@ -64,15 +70,24 @@ public class SectionServiceImpl implements SectionService{
 	}
 
 	@Override
-	public Boolean deleteSection(String sectionid) {
+	public Boolean deleteSection(String sectionid, String userCookie) {
 		// TODO Auto-generated method stub
 		Section section = repository.findById(Long.valueOf(sectionid)).orElse(null);
+		
 		if(section != null) {
+			if (!checkDocOwner(userCookie, section.getDocument().getId())) return false;
+			
 			repository.delete(section);
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	private Boolean checkDocOwner(String userCookie, Long docId) {
+		Document doc = documentRepository.findById(docId).orElse(null);
+		if (doc != null && doc.getUser().getCookie().equals(userCookie)) return true;
+		else return false;
 	}
 
 }

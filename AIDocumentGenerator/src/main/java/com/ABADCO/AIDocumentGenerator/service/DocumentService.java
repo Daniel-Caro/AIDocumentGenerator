@@ -15,9 +15,9 @@ public interface DocumentService {
 	Document createDocument(String title, LocalDate date, String authors, String color, Boolean hasIndex,
 			Boolean isPaginated, Long user_id);
 
-	Boolean deleteDocument(String documentid);
+	Boolean deleteDocument(String documentid, String userCookie);
 	
 	 Document updateDocument(String documentid, String title, LocalDate date, String authors, String color, Boolean hasIndex,
-				Boolean isPaginated);
+				Boolean isPaginated, String userCookie);
 
 }

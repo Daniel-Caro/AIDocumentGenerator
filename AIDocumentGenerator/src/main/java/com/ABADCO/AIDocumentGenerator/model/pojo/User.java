@@ -39,4 +39,8 @@ public class User {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 	
+	@Column(name = "cookie")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String cookie;
+	
 }

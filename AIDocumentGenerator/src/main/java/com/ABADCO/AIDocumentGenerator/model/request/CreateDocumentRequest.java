@@ -36,7 +36,4 @@ public class CreateDocumentRequest {
 	@JsonProperty("isPaginated") 
 	private Boolean isPaginated;
 	
-	@JsonProperty("user_id") 
-	private Long user_id;
-	
 }

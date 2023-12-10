@@ -18,4 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	@Query("SELECT u FROM User u WHERE u.email = :email")
 	public User findByEmail(String email);
 
+	@Query("SELECT u FROM User u WHERE u.cookie = :cookie")
+	public User findByUUID(String cookie);
+
 }
