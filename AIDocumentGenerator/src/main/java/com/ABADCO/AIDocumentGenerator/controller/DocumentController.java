@@ -32,6 +32,7 @@ import com.ABADCO.AIDocumentGenerator.model.request.GPTChatResponse;
 import com.ABADCO.AIDocumentGenerator.model.request.GetRequirementsRequest;
 import com.ABADCO.AIDocumentGenerator.model.request.GetTextRequest;
 import com.ABADCO.AIDocumentGenerator.model.request.UpdateDocumentRequest;
+import com.ABADCO.AIDocumentGenerator.model.request.AIResponse;
 import com.ABADCO.AIDocumentGenerator.service.DocumentService;
 import com.ABADCO.AIDocumentGenerator.service.UserService;
 
@@ -68,8 +69,8 @@ public class DocumentController {
 	public DocumentController(DocumentService service) {this.service = service;}
 	
 	//ADMIN
-	@GetMapping("/documents/bytext")
-	public Object getRequirements(@RequestHeader("Admin-Key") String adminKey, @RequestBody GetRequirementsRequest request) {
+	@PostMapping("/documents/bytext")
+	public ResponseEntity<?> getRequirements(@RequestHeader("Admin-Key") String adminKey, @RequestBody GetRequirementsRequest request) {
 		if (adminKey.equals(adminUUID)) {
 			String finalText = "I want you to obtain a series of requisites from this text. Place all the requisites in a list: " + request.getText();
 			// create a request
@@ -78,17 +79,21 @@ public class DocumentController {
 	        // call the API
 	        GPTChatResponse response = restTemplate.postForObject(apiUrl, requestAI, GPTChatResponse.class);
 	        if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
-	            return "No response";
+	             return new ResponseEntity<String>("No response", HttpStatus.BAD_REQUEST);
 	        }
 	        
 	        // return the first response
-	        return response.getChoices().get(0).getMessage().getContent();
+			String result = response.getChoices().get(0).getMessage().getContent();
+			AIResponse AIResponse = new AIResponse(result);
+
+			return ResponseEntity.ok(AIResponse);
+		
 		} else {return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);}
 	}
 	
 	//ADMIN
-	@GetMapping("/documents/byrequirements")
-	public Object getText(@RequestHeader("Admin-Key") String adminKey, @RequestBody GetTextRequest request) {
+	@PostMapping("/documents/byrequirements")
+	public ResponseEntity<?> getText(@RequestHeader("Admin-Key") String adminKey, @RequestBody GetTextRequest request) {
 		if (adminKey.equals(adminUUID)) {
 			String finalText = "I want you make a text from the requisites presented here: " + request.getRequirements();
 			// create a request
@@ -96,12 +101,13 @@ public class DocumentController {
 	        
 	        // call the API
 	        GPTChatResponse response = restTemplate.postForObject(apiUrl, requestAI, GPTChatResponse.class);
-	        if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
-	            return "No response";
-	        }
+			if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
+				return new ResponseEntity<String>("No response", HttpStatus.BAD_REQUEST);
+			}
 	        
 	        // return the first response
-	        return response.getChoices().get(0).getMessage().getContent();
+			String result = response.getChoices().get(0).getMessage().getContent();
+			AIResponse AIResponse = new AIResponse(result);
 		} else {return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);}
 	}
 	
