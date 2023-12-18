@@ -22,7 +22,6 @@ import com.ABADCO.AIDocumentGenerator.model.request.CheckLogin;
 import com.ABADCO.AIDocumentGenerator.model.request.CreateUserRequest;
 import com.ABADCO.AIDocumentGenerator.service.UserService;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
@@ -89,15 +88,16 @@ public class UserController {
 	}
 	
 	@PostMapping("/users/login")
-	public ResponseEntity<Boolean> checkLogin(@RequestBody CheckLogin request, HttpServletResponse response) {
+	public ResponseEntity<String> checkLogin(@RequestBody CheckLogin request, HttpServletResponse response) {
 		String result = service.checkLogin(request.getEmail(), request.getPassword());
 		if(result == "Incorrect password" || result == "Error finding user") {
-			return ResponseEntity.ok(false);
+			return new ResponseEntity<String>("Email or Password was incorrect", HttpStatus.BAD_REQUEST);
 		} else {
-			Cookie cookie = new Cookie("user-cookie", result);
+			/*Cookie cookie = new Cookie("user-cookie", result);
 			cookie.setPath("/");
-			response.addCookie(cookie);
-			return ResponseEntity.ok(true);
+			response.addCookie(cookie);*/
+			
+			return ResponseEntity.ok(result);
 		}
 	}
 

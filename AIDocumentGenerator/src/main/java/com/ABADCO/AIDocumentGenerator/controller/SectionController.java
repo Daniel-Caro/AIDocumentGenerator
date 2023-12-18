@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,7 +45,7 @@ public class SectionController {
 	
 	//USER
 	@GetMapping("/sections")
-	public ResponseEntity<?> getSections(@CookieValue("user-cookie") String userCookie, @RequestParam Optional<String> title, @RequestParam Optional<String> content, @RequestParam Optional<Integer> position, @RequestParam Optional<Boolean> isVisible, @RequestParam Long document_id) {
+	public ResponseEntity<?> getSections(@RequestHeader("User-Key") String userCookie, @RequestParam Optional<String> title, @RequestParam Optional<String> content, @RequestParam Optional<Integer> position, @RequestParam Optional<Boolean> isVisible, @RequestParam Long document_id) {
 		List<Section> sections;
 		sections = service.getSectionsByCombinedSearch(title.orElse(null), content.orElse(null), position.orElse(null), isVisible.orElse(null), document_id, userCookie);
 		
@@ -56,7 +55,7 @@ public class SectionController {
 	
 	//USER
 	@PostMapping("/sections")
-	public ResponseEntity<Section> createSection(@CookieValue("user-cookie") String userCookie, @RequestBody CreateSectionRequest request) {
+	public ResponseEntity<Section> createSection(@RequestHeader("User-Key") String userCookie, @RequestBody CreateSectionRequest request) {
 		Section newSection = service.createSection(request.getTitle(), request.getContent(), request.getPosition(), request.getIsVisible(), request.getDocument_id(), userCookie);
 		if (newSection != null) {return ResponseEntity.ok(newSection);}
 		else {return ResponseEntity.notFound().build();}
@@ -64,7 +63,7 @@ public class SectionController {
 	
 	//USER
 	@PutMapping("/sections/{sectionid}")
-	public ResponseEntity<Section> updateSection(@CookieValue("user-cookie") String userCookie, @PathVariable String sectionid, @RequestBody UpdateSectionRequest request) {
+	public ResponseEntity<Section> updateSection(@RequestHeader("User-Key") String userCookie, @PathVariable String sectionid, @RequestBody UpdateSectionRequest request) {
 		Section updatedSection = service.updateSection(sectionid, userCookie, request.getTitle(), request.getContent(), request.getPosition(), request.getIsVisible());
 		if (updatedSection != null) {return ResponseEntity.ok(updatedSection);}
 		else {return ResponseEntity.notFound().build();}
@@ -72,7 +71,7 @@ public class SectionController {
 	
 	//USER
 	@DeleteMapping("/sections/{sectionid}")
-	public ResponseEntity<Boolean> deleteSection(@CookieValue("user-cookie") String userCookie, @PathVariable String sectionid) {
+	public ResponseEntity<Boolean> deleteSection(@RequestHeader("User-Key") String userCookie, @PathVariable String sectionid) {
 		Boolean result = service.deleteSection(sectionid, userCookie);
 		if (result) {return ResponseEntity.ok(result);}
 		else {return ResponseEntity.notFound().build();}

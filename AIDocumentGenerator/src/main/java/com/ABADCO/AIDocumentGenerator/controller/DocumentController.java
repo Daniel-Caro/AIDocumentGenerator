@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,13 +25,13 @@ import org.springframework.web.client.RestTemplate;
 
 import com.ABADCO.AIDocumentGenerator.model.pojo.Document;
 import com.ABADCO.AIDocumentGenerator.model.pojo.User;
+import com.ABADCO.AIDocumentGenerator.model.request.AIResponse;
 import com.ABADCO.AIDocumentGenerator.model.request.CreateDocumentRequest;
 import com.ABADCO.AIDocumentGenerator.model.request.GPTChatRequest;
 import com.ABADCO.AIDocumentGenerator.model.request.GPTChatResponse;
 import com.ABADCO.AIDocumentGenerator.model.request.GetRequirementsRequest;
 import com.ABADCO.AIDocumentGenerator.model.request.GetTextRequest;
 import com.ABADCO.AIDocumentGenerator.model.request.UpdateDocumentRequest;
-import com.ABADCO.AIDocumentGenerator.model.request.AIResponse;
 import com.ABADCO.AIDocumentGenerator.service.DocumentService;
 import com.ABADCO.AIDocumentGenerator.service.UserService;
 
@@ -108,6 +107,8 @@ public class DocumentController {
 	        // return the first response
 			String result = response.getChoices().get(0).getMessage().getContent();
 			AIResponse AIResponse = new AIResponse(result);
+			
+			return ResponseEntity.ok(AIResponse);
 		} else {return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);}
 	}
 	
@@ -162,7 +163,7 @@ public class DocumentController {
 	
 	//USER
 	@GetMapping("/documents")
-	public ResponseEntity<?> getDocuments(@CookieValue("user-cookie") String userCookie, @RequestParam Optional<String> title, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)Optional<LocalDate> date, @RequestParam Optional<String> authors, @RequestParam Optional<String> color, @RequestParam Optional<String> urlView, @RequestParam Optional<String> urlEdit) {
+	public ResponseEntity<?> getDocuments(@RequestHeader("User-Key") String userCookie, @RequestParam Optional<String> title, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)Optional<LocalDate> date, @RequestParam Optional<String> authors, @RequestParam Optional<String> color, @RequestParam Optional<String> urlView, @RequestParam Optional<String> urlEdit) {
 		User user = getUserByCookie(userCookie);
 		if (user == null) { return new ResponseEntity<String>("Incorrect cookie, user not found", HttpStatus.BAD_REQUEST);}
 		
@@ -175,7 +176,7 @@ public class DocumentController {
 	
 	//USER
 	@PostMapping("/documents")
-	public ResponseEntity<?> createDocument(@CookieValue("user-cookie") String userCookie, @RequestBody CreateDocumentRequest request) {
+	public ResponseEntity<?> createDocument(@RequestHeader("User-Key") String userCookie, @RequestBody CreateDocumentRequest request) {
 		User user = getUserByCookie(userCookie);
 		if (user == null) { return new ResponseEntity<String>("Incorrect cookie, user not found", HttpStatus.BAD_REQUEST);}
 		
@@ -186,7 +187,7 @@ public class DocumentController {
 	
 	//USER
 	@PutMapping("/documents/{documentid}")
-	public ResponseEntity<?> updateDocument(@CookieValue("user-cookie") String userCookie, @PathVariable String documentid, @RequestBody UpdateDocumentRequest request) {		
+	public ResponseEntity<?> updateDocument(@RequestHeader("User-Key") String userCookie, @PathVariable String documentid, @RequestBody UpdateDocumentRequest request) {		
 		Document updatedDocument = service.updateDocument(documentid, request.getTitle(), request.getDate(), request.getAuthors(), request.getColor(), request.getHasIndex(), request.getIsPaginated(), userCookie);
 		if (updatedDocument != null) {return ResponseEntity.ok(updatedDocument);}
 		else {return ResponseEntity.notFound().build();}
@@ -194,7 +195,7 @@ public class DocumentController {
 	
 	//USER
 	@DeleteMapping("/documents/{documentid}")
-	public ResponseEntity<Boolean> deleteDocument(@CookieValue("user-cookie") String userCookie, @PathVariable String documentid) {
+	public ResponseEntity<Boolean> deleteDocument(@RequestHeader("User-Key") String userCookie, @PathVariable String documentid) {
 		Boolean result = service.deleteDocument(documentid, userCookie);
 		if (result) {return ResponseEntity.ok(result);}
 		else {return ResponseEntity.notFound().build();}
