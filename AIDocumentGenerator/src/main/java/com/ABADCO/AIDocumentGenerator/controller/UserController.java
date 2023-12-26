@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ABADCO.AIDocumentGenerator.model.pojo.User;
 import com.ABADCO.AIDocumentGenerator.model.request.CheckLogin;
+import com.ABADCO.AIDocumentGenerator.model.request.CheckLoginResponse;
 import com.ABADCO.AIDocumentGenerator.model.request.CreateUserRequest;
 import com.ABADCO.AIDocumentGenerator.service.UserService;
 
@@ -88,7 +89,12 @@ public class UserController {
 	}
 	
 	@PostMapping("/users/login")
-	public ResponseEntity<String> checkLogin(@RequestBody CheckLogin request, HttpServletResponse response) {
+	public ResponseEntity<?> checkLogin(@RequestHeader("Admin-Key") String adminKey, @RequestBody CheckLogin request, HttpServletResponse response) {
+
+		if(!adminKey.equals(adminUUID)) {
+			return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+
 		String result = service.checkLogin(request.getEmail(), request.getPassword());
 		if(result == "Incorrect password" || result == "Error finding user") {
 			return new ResponseEntity<String>("Email or Password was incorrect", HttpStatus.BAD_REQUEST);
@@ -96,8 +102,9 @@ public class UserController {
 			/*Cookie cookie = new Cookie("user-cookie", result);
 			cookie.setPath("/");
 			response.addCookie(cookie);*/
-			
-			return ResponseEntity.ok(result);
+			CheckLoginResponse CheckLoginResponse = new CheckLoginResponse(result);
+
+			return ResponseEntity.ok(CheckLoginResponse);
 		}
 	}
 
