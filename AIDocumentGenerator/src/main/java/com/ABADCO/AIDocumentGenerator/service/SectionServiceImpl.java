@@ -3,12 +3,14 @@ package com.ABADCO.AIDocumentGenerator.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.ABADCO.AIDocumentGenerator.data.DocumentRepository;
 import com.ABADCO.AIDocumentGenerator.data.SectionRepository;
 import com.ABADCO.AIDocumentGenerator.model.pojo.Document;
 import com.ABADCO.AIDocumentGenerator.model.pojo.Section;
+
 
 @Service
 public class SectionServiceImpl implements SectionService{
@@ -26,6 +28,7 @@ public class SectionServiceImpl implements SectionService{
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Section> getSectionsByCombinedSearch(String title, String content, Integer position, Boolean isVisible,
 			Long document_id, String userCookie) {
 		// TODO Auto-generated method stub
@@ -35,6 +38,14 @@ public class SectionServiceImpl implements SectionService{
 	}
 
 	@Override
+	@Transactional(readOnly = true)
+	public List<Section> getSectionsByDocumentId(Long document_id) {
+		// TODO Auto-generated method stub
+		return repository.findByDocumentId(document_id);
+	}
+
+	@Override
+	@Transactional
 	public Section createSection(String title, String content, Integer position, Boolean isVisible, Long document_id, String userCookie) {
 		if (!checkDocOwner(userCookie, document_id)) return null;
 		
@@ -54,6 +65,7 @@ public class SectionServiceImpl implements SectionService{
 	}
 
 	@Override
+	@Transactional
 	public Section updateSection(String sectionid, String userCookie, String title, String content, Integer position, Boolean isVisible) {
 		// TODO Auto-generated method stub
 		Section section = repository.findById(Long.valueOf(sectionid)).orElse(null);
@@ -70,6 +82,7 @@ public class SectionServiceImpl implements SectionService{
 	}
 
 	@Override
+	@Transactional
 	public Boolean deleteSection(String sectionid, String userCookie) {
 		// TODO Auto-generated method stub
 		Section section = repository.findById(Long.valueOf(sectionid)).orElse(null);

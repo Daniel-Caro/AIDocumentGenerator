@@ -160,13 +160,33 @@ public class DocumentController {
 			else {return ResponseEntity.notFound().build();}
 		} else {return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);}
 	}
-	
+
+	//ADMIN
+	@GetMapping("/view/document")
+	public ResponseEntity<?> getDocuments(@RequestHeader("Admin-Key") String adminKey, @RequestParam Optional<String> urlView) {
+		if (adminKey.equals(adminUUID)) {
+			List<Document> documents;
+			documents = service.getDocumentsByUrlView(urlView.orElse(null));
+			if (documents != null) {
+				return ResponseEntity.ok(documents);
+			} else {
+				return ResponseEntity.notFound().build();
+			}
+		} else {
+			return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+	}
+
 	//USER
 	@GetMapping("/documents")
-	public ResponseEntity<?> getDocuments(@RequestHeader("User-Key") String userCookie, @RequestParam Optional<String> title, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)Optional<LocalDate> date, @RequestParam Optional<String> authors, @RequestParam Optional<String> color, @RequestParam Optional<String> urlView, @RequestParam Optional<String> urlEdit) {
+	public ResponseEntity<?> getDocuments(@RequestHeader("Admin-Key") String adminKey, @RequestHeader("User-Key") String userCookie, @RequestParam Optional<String> title, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)Optional<LocalDate> date, @RequestParam Optional<String> authors, @RequestParam Optional<String> color, @RequestParam Optional<String> urlView, @RequestParam Optional<String> urlEdit) {
 		User user = getUserByCookie(userCookie);
-		if (user == null) { return new ResponseEntity<String>("Incorrect cookie, user not found", HttpStatus.BAD_REQUEST);}
+
+		if(!adminKey.equals(adminUUID)) {
+			return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+		} else if (user == null) { return new ResponseEntity<String>("Incorrect cookie, user not found", HttpStatus.BAD_REQUEST);}
 		
+
 		List<Document> documents;
 		documents = service.getDocumentsByCombinedSearch(title.orElse(null), date.orElse(null), authors.orElse(null), color.orElse(null), user.getId(), urlView.orElse(null), urlEdit.orElse(null));
 		
@@ -176,10 +196,16 @@ public class DocumentController {
 	
 	//USER
 	@PostMapping("/documents")
-	public ResponseEntity<?> createDocument(@RequestHeader("User-Key") String userCookie, @RequestBody CreateDocumentRequest request) {
+	public ResponseEntity<?> createDocument(@RequestHeader("Admin-Key") String adminKey, @RequestHeader("User-Key") String userCookie, @RequestBody CreateDocumentRequest request) {
 		User user = getUserByCookie(userCookie);
-		if (user == null) { return new ResponseEntity<String>("Incorrect cookie, user not found", HttpStatus.BAD_REQUEST);}
 		
+		if(!adminKey.equals(adminUUID)) {
+			return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+		} else if (user == null) {
+			return new ResponseEntity<String>("Incorrect cookie, user not found", HttpStatus.BAD_REQUEST);
+		}
+		
+
 		Document newDocument = service.createDocument(request.getTitle(), request.getDate(), request.getAuthors(), request.getColor(), request.getHasIndex(), request.getIsPaginated(), user.getId());
 		if (newDocument != null) {return ResponseEntity.ok(newDocument);}
 		else {return ResponseEntity.notFound().build();}
@@ -187,9 +213,19 @@ public class DocumentController {
 	
 	//USER
 	@PutMapping("/documents/{documentid}")
-	public ResponseEntity<?> updateDocument(@RequestHeader("User-Key") String userCookie, @PathVariable String documentid, @RequestBody UpdateDocumentRequest request) {		
+	public ResponseEntity<?> updateDocument(@RequestHeader("Admin-Key") String adminKey, @RequestHeader("User-Key") String userCookie, @PathVariable String documentid, @RequestBody UpdateDocumentRequest request) {
+		User user = getUserByCookie(userCookie);
+	
+		if(!adminKey.equals(adminUUID)) {
+			return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+		} else if (user == null) {
+			return new ResponseEntity<String>("Incorrect cookie, user not found", HttpStatus.BAD_REQUEST);
+		}
+
 		Document updatedDocument = service.updateDocument(documentid, request.getTitle(), request.getDate(), request.getAuthors(), request.getColor(), request.getHasIndex(), request.getIsPaginated(), userCookie);
+
 		if (updatedDocument != null) {return ResponseEntity.ok(updatedDocument);}
+
 		else {return ResponseEntity.notFound().build();}
 	}
 	
@@ -200,7 +236,7 @@ public class DocumentController {
 		if (result) {return ResponseEntity.ok(result);}
 		else {return ResponseEntity.notFound().build();}
 	}
-	
+
 	private User getUserByCookie(String userCookie) {
 		try {
 			return userService.getUserByUUID(userCookie);

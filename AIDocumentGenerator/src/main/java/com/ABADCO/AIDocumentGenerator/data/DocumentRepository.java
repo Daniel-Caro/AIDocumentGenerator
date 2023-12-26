@@ -17,4 +17,10 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 	public List<Document> findByTitleAndDateAndAuthorsAndColorAndUserIdAndUrlViewAndUrlEdit(String title, LocalDate date,
 			String authors, String color, Long userId, String urlView, String urlEdit);
 
+	@Query("SELECT d FROM Document d WHERE (:urlView is null or d.urlView = :urlView)")
+	public List<Document> findByUrlView(String urlView);
+
+	@Query("SELECT d FROM Document d WHERE (:urlEdit is null or d.urlEdit = :urlEdit)")
+	public List<Document> findByUrlEdit(String urlEdit);
+
 }

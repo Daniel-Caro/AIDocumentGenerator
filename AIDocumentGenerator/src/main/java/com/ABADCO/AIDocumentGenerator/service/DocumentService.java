@@ -9,6 +9,10 @@ public interface DocumentService {
 
 	Document getDocumentbyId(String documentid);
 
+	List<Document> getDocumentsByUrlView(String urlView);
+
+	List<Document> getDocumentsByUrlEdit(String urlEdit);
+
 	List<Document> getDocumentsByCombinedSearch(String title, LocalDate date, String authors, String color,
 			Long user_id, String urlView, String urlEdit);
 
