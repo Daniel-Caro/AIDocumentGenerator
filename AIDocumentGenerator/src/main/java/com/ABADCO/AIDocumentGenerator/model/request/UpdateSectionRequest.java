@@ -1,6 +1,7 @@
 package com.ABADCO.AIDocumentGenerator.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Lob;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,8 @@ public class UpdateSectionRequest {
 
 	@JsonProperty("title") 
 	private String title;
-	
+
+	@Lob
 	@JsonProperty("content") 
 	private String content;
 	

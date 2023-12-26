@@ -1,6 +1,7 @@
 package com.ABADCO.AIDocumentGenerator.model.pojo;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,7 +32,8 @@ public class Section {
 	@Column(name = "title")
 	private String title;
 	
-	@Column(name = "content")
+	@Lob  // Indica que 'content' puede contener un texto largo
+    @Column(name = "content")
 	private String content;	
 	
 	@Column(name = "is_visible")

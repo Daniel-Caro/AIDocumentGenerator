@@ -11,6 +11,8 @@ public interface SectionService {
 	List<Section> getSectionsByCombinedSearch(String title, String content, Integer position, Boolean isVisible,
 			Long document_id, String userCookie);
 
+	List<Section> getSectionsByDocumentId(Long document_id);
+
 	Section createSection(String title, String content, Integer position, Boolean isVisible, Long document_id, String userCookie);
 
 	Section updateSection(String sectionid, String userCookie, String title, String content, Integer position, Boolean isVisible);

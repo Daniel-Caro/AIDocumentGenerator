@@ -43,9 +43,25 @@ public class SectionController {
 		} else {return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);}
 	}
 	
+	//ADMIN
+	@GetMapping("/view/sections")
+	public ResponseEntity<?> getSections(@RequestHeader("Admin-Key") String adminKey, @RequestParam Long document_id) {
+		if (adminKey.equals(adminUUID)) {
+			List<Section> sections;
+			sections = service.getSectionsByDocumentId(document_id);
+			if (sections != null) { return ResponseEntity.ok(sections);} 
+			else {return ResponseEntity.notFound().build();}
+		} else {return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);}
+	}
+
 	//USER
 	@GetMapping("/sections")
-	public ResponseEntity<?> getSections(@RequestHeader("User-Key") String userCookie, @RequestParam Optional<String> title, @RequestParam Optional<String> content, @RequestParam Optional<Integer> position, @RequestParam Optional<Boolean> isVisible, @RequestParam Long document_id) {
+	public ResponseEntity<?> getSections(@RequestHeader("Admin-Key") String adminKey, @RequestHeader("User-Key") String userCookie, @RequestParam Optional<String> title, @RequestParam Optional<String> content, @RequestParam Optional<Integer> position, @RequestParam Optional<Boolean> isVisible, @RequestParam Long document_id) {
+
+		if(!adminKey.equals(adminUUID)) {
+			return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+
 		List<Section> sections;
 		sections = service.getSectionsByCombinedSearch(title.orElse(null), content.orElse(null), position.orElse(null), isVisible.orElse(null), document_id, userCookie);
 		
@@ -55,7 +71,12 @@ public class SectionController {
 	
 	//USER
 	@PostMapping("/sections")
-	public ResponseEntity<Section> createSection(@RequestHeader("User-Key") String userCookie, @RequestBody CreateSectionRequest request) {
+	public ResponseEntity<?> createSection(@RequestHeader("Admin-Key") String adminKey, @RequestHeader("User-Key") String userCookie, @RequestBody CreateSectionRequest request) {
+
+		if(!adminKey.equals(adminUUID)) {
+			return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+
 		Section newSection = service.createSection(request.getTitle(), request.getContent(), request.getPosition(), request.getIsVisible(), request.getDocument_id(), userCookie);
 		if (newSection != null) {return ResponseEntity.ok(newSection);}
 		else {return ResponseEntity.notFound().build();}
@@ -63,7 +84,12 @@ public class SectionController {
 	
 	//USER
 	@PutMapping("/sections/{sectionid}")
-	public ResponseEntity<Section> updateSection(@RequestHeader("User-Key") String userCookie, @PathVariable String sectionid, @RequestBody UpdateSectionRequest request) {
+	public ResponseEntity<?> updateSection(@RequestHeader("Admin-Key") String adminKey, @RequestHeader("User-Key") String userCookie, @PathVariable String sectionid, @RequestBody UpdateSectionRequest request) {
+
+		if(!adminKey.equals(adminUUID)) {
+			return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+
 		Section updatedSection = service.updateSection(sectionid, userCookie, request.getTitle(), request.getContent(), request.getPosition(), request.getIsVisible());
 		if (updatedSection != null) {return ResponseEntity.ok(updatedSection);}
 		else {return ResponseEntity.notFound().build();}
@@ -71,7 +97,12 @@ public class SectionController {
 	
 	//USER
 	@DeleteMapping("/sections/{sectionid}")
-	public ResponseEntity<Boolean> deleteSection(@RequestHeader("User-Key") String userCookie, @PathVariable String sectionid) {
+	public ResponseEntity<?> deleteSection(@RequestHeader("Admin-Key") String adminKey, @RequestHeader("User-Key") String userCookie, @PathVariable String sectionid) {
+
+		if(!adminKey.equals(adminUUID)) {
+			return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+
 		Boolean result = service.deleteSection(sectionid, userCookie);
 		if (result) {return ResponseEntity.ok(result);}
 		else {return ResponseEntity.notFound().build();}

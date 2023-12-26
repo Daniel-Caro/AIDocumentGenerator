@@ -13,7 +13,8 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 
 		registry.addMapping("/**")
-			.allowedOrigins("https://lovedocu-git-dev-store-angelabenavente.vercel.app");
+			.allowedMethods("GET", "POST", "PUT", "OPTIONS", "DELETE") 
+			.allowedOrigins("https://lovedocu.vercel.app");
 
 		// Add more mappings...
 	}

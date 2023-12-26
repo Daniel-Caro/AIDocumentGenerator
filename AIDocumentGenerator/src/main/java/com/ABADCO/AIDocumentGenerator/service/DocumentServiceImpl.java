@@ -36,6 +36,18 @@ public class DocumentServiceImpl implements DocumentService{
 	}
 
 	@Override
+	public List<Document> getDocumentsByUrlView(String urlView) {
+		// TODO Auto-generated method stub
+		return repository.findByUrlView(urlView);
+	}
+
+	@Override
+	public List<Document> getDocumentsByUrlEdit(String urlEdit) {
+		// TODO Auto-generated method stub
+		return repository.findByUrlEdit(urlEdit);
+	}
+
+	@Override
 	public Document createDocument(String title, LocalDate date, String authors, String color, Boolean hasIndex,
 			Boolean isPaginated, Long user_id) {
 		// TODO Auto-generated method stub
