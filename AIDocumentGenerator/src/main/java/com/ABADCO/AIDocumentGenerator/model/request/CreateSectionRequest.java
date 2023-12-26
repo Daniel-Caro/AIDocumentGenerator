@@ -3,6 +3,8 @@ package com.ABADCO.AIDocumentGenerator.model.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
+import jakarta.persistence.Lob;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +18,7 @@ public class CreateSectionRequest {
 	@JsonProperty("title") 
 	private String title;
 	
+	@Lob
 	@JsonProperty("content") 
 	private String content;
 	
