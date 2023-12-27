@@ -32,8 +32,5 @@ public class UpdateDocumentRequest {
 	
 	@JsonProperty("hasIndex") 
 	private Boolean hasIndex;
-	
-	@JsonProperty("isPaginated") 
-	private Boolean isPaginated;
 
 }

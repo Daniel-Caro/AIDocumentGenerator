@@ -36,9 +36,6 @@ public class Section {
     @Column(name = "content")
 	private String content;	
 	
-	@Column(name = "is_visible")
-	private Boolean isVisible;
-	
 	@Column(name = "position")
 	private Integer position;
 	

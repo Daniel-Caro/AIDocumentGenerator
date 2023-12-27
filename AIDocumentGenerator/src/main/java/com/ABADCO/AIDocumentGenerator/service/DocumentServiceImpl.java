@@ -34,9 +34,9 @@ public class DocumentServiceImpl implements DocumentService{
 	
 	@Override
 	public List<Document> getDocumentsByCombinedSearch(String title, LocalDate date, String authors, String color,
-			Long user_id, String urlView, String urlEdit) {
+			Long user_id, String urlView) {
 		// TODO Auto-generated method stub
-		return repository.findByTitleAndDateAndAuthorsAndColorAndUserIdAndUrlViewAndUrlEdit(title, date, authors, color, user_id, urlView, urlEdit);
+		return repository.findByTitleAndDateAndAuthorsAndColorAndUserIdAndUrlView(title, date, authors, color, user_id, urlView);
 	}
 
 	@Override
@@ -46,17 +46,9 @@ public class DocumentServiceImpl implements DocumentService{
 	}
 
 	@Override
-	public List<Document> getDocumentsByUrlEdit(String urlEdit) {
-		// TODO Auto-generated method stub
-		return repository.findByUrlEdit(urlEdit);
-	}
-
-	@Override
-	public Document createDocument(String title, LocalDate date, String authors, String color, Boolean hasIndex,
-			Boolean isPaginated, Long user_id) {
+	public Document createDocument(String title, LocalDate date, String authors, String color, Boolean hasIndex, Long user_id) {
 		// TODO Auto-generated method stub
 		String urlView = UUID.randomUUID().toString();
-		String urlEdit = UUID.randomUUID().toString();
 		
 		Document document = new Document();
 		document.setTitle(title);
@@ -64,9 +56,7 @@ public class DocumentServiceImpl implements DocumentService{
 		document.setAuthors(authors);
 		document.setColor(color);
 		document.setHasIndex(hasIndex);
-		document.setIsPaginated(isPaginated);
 		document.setUrlView(urlView);
-		document.setUrlEdit(urlEdit);
 		
 		User user = userRepository.findById(user_id).orElse(null);
 		if (user == null) return null;
@@ -76,8 +66,7 @@ public class DocumentServiceImpl implements DocumentService{
 		return document;
 	}
 	
-	public Document updateDocument(String documentid, String title, LocalDate date, String authors, String color, Boolean hasIndex,
-			Boolean isPaginated, String userCookie) {
+	public Document updateDocument(String documentid, String title, LocalDate date, String authors, String color, Boolean hasIndex, String userCookie) {
 		Document document = repository.findById(Long.valueOf(documentid)).orElse(null);
 		
 		if (!document.getUser().getCookie().equals(userCookie)) return null;
@@ -87,7 +76,6 @@ public class DocumentServiceImpl implements DocumentService{
 		document.setAuthors(authors);
 		document.setColor(color);
 		document.setHasIndex(hasIndex);
-		document.setIsPaginated(isPaginated);
 		
 		repository.save(document);
 		return document;

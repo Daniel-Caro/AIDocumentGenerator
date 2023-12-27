@@ -2,6 +2,8 @@ package com.ABADCO.AIDocumentGenerator.model.pojo;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,21 +44,16 @@ public class Document {
 	@Column(name = "color")
 	private String color;
 	
-	@Column(name = "is_paginated")
-	private Boolean isPaginated;
-	
 	@Column(name = "has_index")
 	private Boolean hasIndex;
 	
 	@Column(name = "url_view")
 	private String urlView;
 	
-	@Column(name = "url_edit")
-	private String urlEdit;
-	
 	@ManyToOne
     //@MapsId("userId")
     //@JoinColumn(name = "user_id")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
 
 }

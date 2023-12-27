@@ -25,9 +25,6 @@ public class CreateSectionRequest {
 	@JsonProperty("position") 
 	private Integer position;
 	
-	@JsonProperty("isVisible") 
-	private Boolean isVisible;
-	
 	@JsonProperty("document_id") 
 	private Long document_id;
 

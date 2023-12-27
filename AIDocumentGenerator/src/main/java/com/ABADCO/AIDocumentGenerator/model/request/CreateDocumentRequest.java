@@ -33,7 +33,4 @@ public class CreateDocumentRequest {
 	@JsonProperty("hasIndex") 
 	private Boolean hasIndex;
 	
-	@JsonProperty("isPaginated") 
-	private Boolean isPaginated;
-	
 }

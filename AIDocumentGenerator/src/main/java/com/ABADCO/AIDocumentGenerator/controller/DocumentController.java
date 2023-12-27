@@ -179,7 +179,7 @@ public class DocumentController {
 
 	//USER
 	@GetMapping("/documents")
-	public ResponseEntity<?> getDocuments(@RequestHeader("Admin-Key") String adminKey, @RequestHeader("User-Key") String userCookie, @RequestParam Optional<String> title, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)Optional<LocalDate> date, @RequestParam Optional<String> authors, @RequestParam Optional<String> color, @RequestParam Optional<String> urlView, @RequestParam Optional<String> urlEdit) {
+	public ResponseEntity<?> getDocuments(@RequestHeader("Admin-Key") String adminKey, @RequestHeader("User-Key") String userCookie, @RequestParam Optional<String> title, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)Optional<LocalDate> date, @RequestParam Optional<String> authors, @RequestParam Optional<String> color, @RequestParam Optional<String> urlView) {
 		User user = getUserByCookie(userCookie);
 
 		if(!adminKey.equals(adminUUID)) {
@@ -188,7 +188,7 @@ public class DocumentController {
 		
 
 		List<Document> documents;
-		documents = service.getDocumentsByCombinedSearch(title.orElse(null), date.orElse(null), authors.orElse(null), color.orElse(null), user.getId(), urlView.orElse(null), urlEdit.orElse(null));
+		documents = service.getDocumentsByCombinedSearch(title.orElse(null), date.orElse(null), authors.orElse(null), color.orElse(null), user.getId(), urlView.orElse(null));
 		
 		if (documents != null) {return ResponseEntity.ok(documents); } 
 		else { return ResponseEntity.notFound().build();}
@@ -206,7 +206,7 @@ public class DocumentController {
 		}
 		
 
-		Document newDocument = service.createDocument(request.getTitle(), request.getDate(), request.getAuthors(), request.getColor(), request.getHasIndex(), request.getIsPaginated(), user.getId());
+		Document newDocument = service.createDocument(request.getTitle(), request.getDate(), request.getAuthors(), request.getColor(), request.getHasIndex(), user.getId());
 		if (newDocument != null) {return ResponseEntity.ok(newDocument);}
 		else {return ResponseEntity.notFound().build();}
 	}
@@ -222,7 +222,7 @@ public class DocumentController {
 			return new ResponseEntity<String>("Incorrect cookie, user not found", HttpStatus.BAD_REQUEST);
 		}
 
-		Document updatedDocument = service.updateDocument(documentid, request.getTitle(), request.getDate(), request.getAuthors(), request.getColor(), request.getHasIndex(), request.getIsPaginated(), userCookie);
+		Document updatedDocument = service.updateDocument(documentid, request.getTitle(), request.getDate(), request.getAuthors(), request.getColor(), request.getHasIndex(), userCookie);
 
 		if (updatedDocument != null) {return ResponseEntity.ok(updatedDocument);}
 

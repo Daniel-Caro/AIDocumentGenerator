@@ -29,12 +29,11 @@ public class SectionServiceImpl implements SectionService{
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Section> getSectionsByCombinedSearch(String title, String content, Integer position, Boolean isVisible,
-			Long document_id, String userCookie) {
+	public List<Section> getSectionsByCombinedSearch(String title, String content, Integer position, Long document_id, String userCookie) {
 		// TODO Auto-generated method stub
 		//INVALID SEARCH FOR THAT USER
 		if (!checkDocOwner(userCookie, document_id)) return null;
-		return repository.findByTitleAndContentAndPositionAndIsVisibleAndDocumentId(title, content, position, isVisible, document_id);
+		return repository.findByTitleAndContentAndPositionAndDocumentId(title, content, position, document_id);
 	}
 
 	@Override
@@ -46,15 +45,14 @@ public class SectionServiceImpl implements SectionService{
 
 	@Override
 	@Transactional
-	public Section createSection(String title, String content, Integer position, Boolean isVisible, Long document_id, String userCookie) {
+	public Section createSection(String title, String content, Integer position, Long document_id, String userCookie) {
 		if (!checkDocOwner(userCookie, document_id)) return null;
 		
 		// TODO Auto-generated method stub
 		Section section = new Section();
 		section.setTitle(title);
-		section.setContent(content);;
-		section.setPosition(position);;
-		section.setIsVisible(isVisible);;
+		section.setContent(content);
+		section.setPosition(position);
 		
 		Document doc = documentRepository.findById(document_id).orElse(null);
 		if (doc == null) return null;
@@ -66,7 +64,7 @@ public class SectionServiceImpl implements SectionService{
 
 	@Override
 	@Transactional
-	public Section updateSection(String sectionid, String userCookie, String title, String content, Integer position, Boolean isVisible) {
+	public Section updateSection(String sectionid, String userCookie, String title, String content, Integer position) {
 		// TODO Auto-generated method stub
 		Section section = repository.findById(Long.valueOf(sectionid)).orElse(null);
 		
@@ -75,7 +73,6 @@ public class SectionServiceImpl implements SectionService{
 		section.setTitle(title);
 		section.setContent(content);
 		section.setPosition(position);
-		section.setIsVisible(isVisible);
 		
 		repository.save(section);
 		return section;

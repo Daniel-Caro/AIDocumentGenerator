@@ -56,14 +56,14 @@ public class SectionController {
 
 	//USER
 	@GetMapping("/sections")
-	public ResponseEntity<?> getSections(@RequestHeader("Admin-Key") String adminKey, @RequestHeader("User-Key") String userCookie, @RequestParam Optional<String> title, @RequestParam Optional<String> content, @RequestParam Optional<Integer> position, @RequestParam Optional<Boolean> isVisible, @RequestParam Long document_id) {
+	public ResponseEntity<?> getSections(@RequestHeader("Admin-Key") String adminKey, @RequestHeader("User-Key") String userCookie, @RequestParam Optional<String> title, @RequestParam Optional<String> content, @RequestParam Optional<Integer> position, @RequestParam Long document_id) {
 
 		if(!adminKey.equals(adminUUID)) {
 			return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
 		}
 
 		List<Section> sections;
-		sections = service.getSectionsByCombinedSearch(title.orElse(null), content.orElse(null), position.orElse(null), isVisible.orElse(null), document_id, userCookie);
+		sections = service.getSectionsByCombinedSearch(title.orElse(null), content.orElse(null), position.orElse(null), document_id, userCookie);
 		
 		if (sections != null) {return ResponseEntity.ok(sections); } 
 		else { return ResponseEntity.notFound().build();}
@@ -77,7 +77,7 @@ public class SectionController {
 			return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
 		}
 
-		Section newSection = service.createSection(request.getTitle(), request.getContent(), request.getPosition(), request.getIsVisible(), request.getDocument_id(), userCookie);
+		Section newSection = service.createSection(request.getTitle(), request.getContent(), request.getPosition(), request.getDocument_id(), userCookie);
 		if (newSection != null) {return ResponseEntity.ok(newSection);}
 		else {return ResponseEntity.notFound().build();}
 	}
@@ -90,7 +90,7 @@ public class SectionController {
 			return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
 		}
 
-		Section updatedSection = service.updateSection(sectionid, userCookie, request.getTitle(), request.getContent(), request.getPosition(), request.getIsVisible());
+		Section updatedSection = service.updateSection(sectionid, userCookie, request.getTitle(), request.getContent(), request.getPosition());
 		if (updatedSection != null) {return ResponseEntity.ok(updatedSection);}
 		else {return ResponseEntity.notFound().build();}
 	}

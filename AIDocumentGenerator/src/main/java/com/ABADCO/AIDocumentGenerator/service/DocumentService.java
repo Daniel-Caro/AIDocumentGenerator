@@ -11,17 +11,13 @@ public interface DocumentService {
 
 	List<Document> getDocumentsByUrlView(String urlView);
 
-	List<Document> getDocumentsByUrlEdit(String urlEdit);
-
 	List<Document> getDocumentsByCombinedSearch(String title, LocalDate date, String authors, String color,
-			Long user_id, String urlView, String urlEdit);
+			Long user_id, String urlView);
 
-	Document createDocument(String title, LocalDate date, String authors, String color, Boolean hasIndex,
-			Boolean isPaginated, Long user_id);
+	Document createDocument(String title, LocalDate date, String authors, String color, Boolean hasIndex, Long user_id);
 
 	Boolean deleteDocument(String documentid, String userCookie);
 	
-	 Document updateDocument(String documentid, String title, LocalDate date, String authors, String color, Boolean hasIndex,
-				Boolean isPaginated, String userCookie);
+	 Document updateDocument(String documentid, String title, LocalDate date, String authors, String color, Boolean hasIndex, String userCookie);
 
 }

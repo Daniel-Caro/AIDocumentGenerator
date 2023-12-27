@@ -24,7 +24,4 @@ public class UpdateSectionRequest {
 	@JsonProperty("position") 
 	private Integer position;
 	
-	@JsonProperty("isVisible") 
-	private Boolean isVisible;
-	
 }
