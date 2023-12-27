@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.ABADCO.AIDocumentGenerator.data.DocumentRepository;
 import com.ABADCO.AIDocumentGenerator.data.UserRepository;
 import com.ABADCO.AIDocumentGenerator.model.pojo.Document;
+import com.ABADCO.AIDocumentGenerator.model.pojo.Section;
 import com.ABADCO.AIDocumentGenerator.model.pojo.User;
 
 @Service
@@ -20,6 +21,9 @@ public class DocumentServiceImpl implements DocumentService{
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private SectionService sectionService;
 
 	@Override
 	public Document getDocumentbyId(String documentid) {
@@ -93,6 +97,13 @@ public class DocumentServiceImpl implements DocumentService{
 	public Boolean deleteDocument(String documentId, String userCookie) {
 		// TODO Auto-generated method stub
 		Document document = repository.findById(Long.valueOf(documentId)).orElse(null);
+		
+		//Debemos borrar todas las secciones relacionadas con el documento
+		List<Section> sectionsToDelete = sectionService.getSectionsByDocumentId(Long.valueOf(documentId));
+		for(Section section: sectionsToDelete) {
+			sectionService.deleteSection(String.valueOf(section.getId()), userCookie);
+		}
+		
 		if(document != null && document.getUser().getCookie().equals(userCookie)) {
 			repository.delete(document);
 			return true;

@@ -17,6 +17,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private UserRepository repository;
+	
+	/*@Autowired
+	private DocumentService documentService;*/
 
 	@Override
 	public User getUserById(String userid) {
@@ -63,6 +66,13 @@ public class UserServiceImpl implements UserService{
 	public Boolean deleteUser(String userid) {
 		// TODO Auto-generated method stub
 		User user = repository.findById(Long.valueOf(userid)).orElse(null);
+		
+		/*//Debemos borrar los documentos asociados al usuario
+		List<Document> documentsToDelete = documentService.getDocumentsByCombinedSearch(null, null, null, null, Long.valueOf(userid), null, null);
+		for(Document document: documentsToDelete) {
+			documentService.deleteDocument(String.valueOf(document.getId()), userCookie);
+		}*/
+		
 		if(user != null) {
 			repository.delete(user);
 			return true;
