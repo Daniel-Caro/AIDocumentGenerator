@@ -94,7 +94,7 @@ public class DocumentController {
 	@PostMapping("/documents/byrequirements")
 	public ResponseEntity<?> getText(@RequestHeader("Admin-Key") String adminKey, @RequestBody GetTextRequest request) {
 		if (adminKey.equals(adminUUID)) {
-			String finalText = "I want you make a text from the requisites presented here: " + request.getRequirements();
+			String finalText = "For a technical documentation before start a project, I want you to make a short text redaction of the project that will be developed taking in account the requisites presented here. Just give the generated text redaction without any introductions: " + request.getRequirements();
 			// create a request
 	        GPTChatRequest requestAI = new GPTChatRequest(model, finalText);
 	        
