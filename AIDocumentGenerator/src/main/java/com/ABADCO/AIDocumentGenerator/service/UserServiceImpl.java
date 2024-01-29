@@ -38,6 +38,11 @@ public class UserServiceImpl implements UserService{
 		// TODO Auto-generated method stub
 		User user = new User();
 		
+		//Check data is not already in DDBB
+		List<User> emailCheck = repository.findByUsernameAndEmail(null, email);
+		List<User> usernameCheck = repository.findByUsernameAndEmail(username, null);
+		if (emailCheck.size() != 0 || usernameCheck.size() != 0) return null;
+		
 		String cookie = UUID.randomUUID().toString();
 		
 		user.setUsername(username);
@@ -53,6 +58,12 @@ public class UserServiceImpl implements UserService{
 	public User updateUser(String userid, String username, String email, String password) {
 		// TODO Auto-generated method stub
 		User user = repository.findById(Long.valueOf(userid)).orElse(null);
+		
+		//Check data is not already in DDBB
+		List<User> emailCheck = repository.findByUsernameAndEmail(null, email);
+		List<User> usernameCheck = repository.findByUsernameAndEmail(username, null);
+		if (emailCheck.size() != 0 && !user.getEmail().equals(email)) return null;
+		if (usernameCheck.size() != 0 && !user.getUsername().equals(username)) return null;
 				
 		user.setUsername(username);
 		user.setPassword(encoder.encode(password));
